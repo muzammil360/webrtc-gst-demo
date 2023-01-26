@@ -276,17 +276,17 @@ static GstElement* create_webrtc()
   GstStateChangeReturn ret;
   GError* error = NULL;
 
-  // pipeline =
-  //    gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
-  //      "videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
-  //      "queue ! " RTP_CAPS_VP8 " ! sendonly. "
-  //      , &error);
-
   pipeline =
-   gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
-     "videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! x264enc ! rtph264pay ! "
-     "queue ! " RTP_CAPS_H264 " ! sendonly. "
-     , &error);
+     gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
+       "videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
+       "queue ! " RTP_CAPS_VP8 " ! sendonly. "
+       , &error);
+
+  // pipeline =
+  //  gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
+  //    "videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! x264enc ! rtph264pay ! "
+  //    "queue ! " RTP_CAPS_H264 " ! sendonly. "
+  //    , &error);
 
   if (error) {
     gst_printerr ("Failed to parse launch: %s\n", error->message);
