@@ -15,8 +15,8 @@ docker buildx build -t webrtc-gst-demo:latest .
 ```
 
 # Run docker 
-STREAM_TYPE=0
 ```
+STREAM_TYPE=0
 docker run --rm --name webrtc.docker \
 -v /var/run/dbus:/var/run/dbus \
 -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
