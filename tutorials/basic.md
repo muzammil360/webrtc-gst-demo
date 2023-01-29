@@ -15,4 +15,15 @@ gst-launch-1.0 -v videotestsrc  is-live=true ! \
 Test that sample stream started successfully
 ```
 ffplay rtmp://localhost:1935/stream/sample1
+
+gst-launch-1.0 rtmpsrc location=rtmp://localhost:1935/stream/sample1 ! decodebin ! autovideosink
+
 ```
+
+
+## Start gstreamer app
+
+
+
+## View stream in browser
+- run local

@@ -5,19 +5,21 @@ RUN apt update && DEBIAN_FRONTEND="noninteractive" apt install -y \
   bison build-essential cmake flex git libevent-dev libglib2.0-dev libmbedtls-dev \
   libnice-dev libsrtp2-dev libssl-dev libvpx-dev ninja-build python-is-python3 \
   python3-pip
+RUN apt install -y librtmp-dev   
 RUN python -m pip install meson
 
 # Copy libnice plugin patch file.
 WORKDIR /src
 
 # Build gstreamer
-RUN git clone https://gitlab.freedesktop.org/gstreamer/gst-build.git --depth 1 gst-build
-WORKDIR /src/gst-build
+RUN git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git --depth 1 gstreamer
+WORKDIR /src/gstreamer
 RUN meson setup -Dgood=enabled -Dgst-plugins-good:vpx=enabled \
   -Dgst-plugins-good:rtpmanager=enabled \
   -Dbad=enabled -Dgst-plugins-bad:dtls=enabled \
   -Dbad=enabled -Dgst-plugins-bad:srtp=enabled \
   -Dbad=enabled -Dgst-plugins-bad:webrtc=enabled \
+  -Dbad=enabled -Dgst-plugins-bad:rtmp=enabled \
   -Dintrospection=disabled \
   --default-library=static \
   builddir

@@ -10,8 +10,6 @@ RUN apt update && DEBIAN_FRONTEND="noninteractive" apt install -y \
 
 COPY --from=builder /usr/local/include/gstreamer-1.0 /usr/include
 COPY --from=builder /usr/local/lib/x86_64-linux-gnu/libgstreamer-full-1.0.so /usr/lib/
-#TODO: Determine apt package for libdssim. 
-COPY --from=builder /usr/local/lib/x86_64-linux-gnu/libdssim-lib.so /usr/lib/libdssim-lib.so.1
 
 WORKDIR /src/gstreamer-webrtc-echo
 COPY ["cJSON.c", "cJSON.h", "CMakeLists.txt", "gstreamer-webrtc-echo.c", "./"]
