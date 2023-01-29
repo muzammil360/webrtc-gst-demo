@@ -60,6 +60,8 @@ static void on_answer_created (GstPromise* promise, gpointer user_data);
 static void set_offer(GstElement* webrtc, const gchar* sdp_offer_str);
 static gboolean bus_call (GstBus* bus, GstMessage* msg, gpointer data);
 
+int pipelineIdx;
+
 int main(int argc, char* argv[])
 {
   GMainLoop* gst_main_loop;
@@ -67,6 +69,9 @@ int main(int argc, char* argv[])
   struct event_base* base = NULL;
   struct evhttp* httpSvr = NULL;
   int res = 0;
+
+  pipelineIdx = atoi(argv[1]);
+  printf("Using pipeline index: %d \n", pipelineIdx);
 
 #ifdef _WIN32
   {
@@ -276,18 +281,43 @@ static GstElement* create_webrtc()
   GstStateChangeReturn ret;
   GError* error = NULL;
 
-  pipeline =
-     gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
+
+  char testStreamPipeline[] = "webrtcbin bundle-policy=max-bundle name=sendonly "
        "videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
-       "queue ! " RTP_CAPS_VP8 " ! sendonly. "
-       , &error);
+       "queue ! " RTP_CAPS_VP8 " ! sendonly. ";
+
+  char rtmpPipeline[] =  "webrtcbin bundle-policy=max-bundle name=sendonly "
+       "rtmpsrc location=rtmp://localhost:1935/stream/sample1 ! decodebin ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
+       "queue ! " RTP_CAPS_VP8 " ! sendonly. ";
+
+  char mp4VideoPipeline[] = "webrtcbin bundle-policy=max-bundle name=sendonly "
+       "filesrc location=../data/sample-mp4-file.mp4 ! decodebin ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
+       "queue ! " RTP_CAPS_VP8 " ! sendonly. ";
+
+
+  if (pipelineIdx == 0) {
+    pipeline = gst_parse_launch(testStreamPipeline, &error );
+  } else if (pipelineIdx == 1) {
+    pipeline = gst_parse_launch(rtmpPipeline, &error );
+  } else if (pipelineIdx == 2) {
+    pipeline = gst_parse_launch(mp4VideoPipeline, &error );
+  } else {
+    fprintf(stderr,"Invalid pipeline index. Program will exit. \n");
+    exit(1);
+  }
+
+  // pipeline =
+  //    gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
+  //      "videotestsrc is-live=true pattern=ball ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
+  //      "queue ! " RTP_CAPS_VP8 " ! sendonly. "
+  //      , &error);
     
 
-  pipeline =
-     gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
-       "rtmpsrc location = location=rtmp://localhost:1935/stream/sample1 ! decodebin ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
-       "queue ! " RTP_CAPS_VP8 " ! sendonly. "
-       , &error);
+  // pipeline =
+  //    gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "
+  //      "rtmpsrc location = location=rtmp://localhost:1935/stream/sample1 ! decodebin ! videoconvert ! queue ! vp8enc deadline=1 ! rtpvp8pay ! "
+  //      "queue ! " RTP_CAPS_VP8 " ! sendonly. "
+  //      , &error);
 
   // pipeline =
   //  gst_parse_launch ("webrtcbin bundle-policy=max-bundle name=sendonly "

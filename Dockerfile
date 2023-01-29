@@ -12,10 +12,10 @@ COPY --from=builder /usr/local/include/gstreamer-1.0 /usr/include
 COPY --from=builder /usr/local/lib/x86_64-linux-gnu/libgstreamer-full-1.0.so /usr/lib/
 
 WORKDIR /src/gstreamer-webrtc-echo
+COPY ./data data
 COPY ["cJSON.c", "cJSON.h", "CMakeLists.txt", "gstreamer-webrtc-echo.c", "./"]
 WORKDIR /src/gstreamer-webrtc-echo/builddir
-RUN cmake .. && make && cp gstreamer-webrtc-echo /
-WORKDIR /
+RUN cmake .. && make 
 
 EXPOSE 8080
-ENTRYPOINT ["/gstreamer-webrtc-echo"]
+ENTRYPOINT ["./gstreamer-webrtc-echo"]

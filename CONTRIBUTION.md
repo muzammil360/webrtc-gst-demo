@@ -1,4 +1,0 @@
-- base docker not building
-  - meson command out of data (missing `setup` )
-- issue in ice communication
-  - fixed with avahi
