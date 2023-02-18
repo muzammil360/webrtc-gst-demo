@@ -27,9 +27,11 @@ We start the gstreamer application.
 ```
 STREAM_TYPE=1
 
-docker run --rm --name webrtc.docker \
--v /var/run/dbus:/var/run/dbus \
--v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
+
+
+
+
+docker run -d --name webrtc.docker \
 --network=host  \
 webrtc-gst-demo:latest ${STREAM_TYPE}
 ```
